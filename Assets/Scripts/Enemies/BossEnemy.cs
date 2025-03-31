@@ -1,5 +1,6 @@
 using System.Collections;
 using Configs;
+using Enemies.Minions;
 using Mangers;
 using Player;
 using UI;
@@ -33,6 +34,15 @@ namespace Enemies
         bool m_isDead;
 
         Vector2 m_direction;
+
+        
+        MinionPool m_pool;
+        
+        [Inject]
+        public void Construct(MinionPool minionPool)
+        {
+            m_pool = minionPool;
+        }
 
         void Start()
         {
@@ -101,8 +111,11 @@ namespace Enemies
                 var direction = (player.transform.position - transform.position).normalized;
                 for (var i = 0; i < m_henchmanCount; i++)
                 {
-                    var henchman = Instantiate(henchmanEnemy, transform.position + direction * m_henchmanSpawnDistance, Quaternion.identity, null);
-                    henchman.Initialize(m_gameManager, m_cam);
+                    // var henchman = Instantiate(henchmanEnemy, transform.position + direction * m_henchmanSpawnDistance, Quaternion.identity, null);
+                    // henchman.Initialize(m_gameManager, m_cam);
+
+                    var minion = m_pool.Spawn();
+                    minion.transform.position = transform.position + direction * m_henchmanSpawnDistance;
                     yield return null;
                 }
             }
